@@ -23,6 +23,8 @@ const zipCode = document.getElementById("zip");
 const cvv = document.getElementById("cvv");
 let form = document.querySelector("form");
 
+const activitesCheckbox = document.getElementById("activities-box");
+
 //Focus on name field 
 nameInput.focus();
 
@@ -44,7 +46,7 @@ color.disabled = true;
 //disblae color options not available for design selected
 design.addEventListener("change", e => {
     color.disabled = false;
-    for (let i = 0; i < colorOptions.length; i ++) {
+    for (let i = 0; i < colorOptions.length; i++) {
         const currentOption = colorOptions[i];
         const dataTheme = currentOption.getAttribute("data-theme");
         console.log(e.target.value, dataTheme);
@@ -63,7 +65,7 @@ registerActivties.addEventListener("change", e => {
         totalPrice += parseInt(dataCost);
     } else {
         totalPrice -= parseInt(dataCost);
-    } 
+    }
     totalElement.innerHTML = "Total: $" + totalPrice;
 });
 
@@ -91,16 +93,42 @@ payWith.addEventListener("change", e => {
 
 //form validation section 
 form.addEventListener("submit", e => {
-    //e.preventDefault();
+    e.preventDefault();
     const nameField = nameInput.value;
-    const isNameValid = /^[A-Za-z]+$/.test(nameField.value);
-    if (isNameValid == false) {
+    const isNameValid = /^[A-Za-z]+$/.test(nameField);
+    if (isNameValid) {
         e.preventDefault();
-        alert('Please enter your name');
-        return false;
+        nameInput.className = "valid";
     } else {
-        return true;
+        nameInput.className = "invalid";
     }
+    isRegisterValid();
 });
 
+function isEmailValid(email) {
+    return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
+}
+
+function isCardNumValid(cardnumber) {
+    return /^\d{13,16}$/.test(cardnumber);
+}
+
+function isZipValid(zipcode) {
+    return /^\d{5}$/.test(zipcode);
+}
+
+function isCvvValid(cvv) {
+    return /^\d{3}$/.test(cvv);
+}
+
+function isRegisterValid() {
+    for (i = 0; i < activitesCheckbox.children.length; i++) {
+        console.log(activitesCheckbox.children[i]);
+        if (activitesCheckbox.children[i].children[0].checked) {
+            activitesCheckbox.children.className = "valid";
+        } else {
+            activitesCheckbox.children.className = "invalid";
+        }
+    }
+}
 
