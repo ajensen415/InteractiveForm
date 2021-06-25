@@ -18,7 +18,7 @@ const creditCard = document.getElementById("credit-card");
 const paypal = document.getElementById("paypal");
 const bitcoin = document.getElementById("bitcoin");
 
-const cardNumber = document.getElementById("credit-card");
+const cardNumber = document.getElementById("cc-num");
 const zipCode = document.getElementById("zip");
 const cvv = document.getElementById("cvv");
 let form = document.querySelector("form");
@@ -88,4 +88,19 @@ payWith.addEventListener("change", e => {
         bitcoin.style.display = 'inherit';
     }
 });
+
+//form validation section 
+form.addEventListener("submit", e => {
+    //e.preventDefault();
+    const nameField = nameInput.value;
+    const isNameValid = /^[A-Za-z]+$/.test(nameField.value);
+    if (isNameValid == false) {
+        e.preventDefault();
+        alert('Please enter your name');
+        return false;
+    } else {
+        return true;
+    }
+});
+
 
