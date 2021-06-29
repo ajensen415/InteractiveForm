@@ -27,16 +27,18 @@ const colorOptions = color.children;
 //disable color dropdown until user selects shirt design
 color.disabled = true;
 
-//disblae color options not available for design selected
+//t-shirt colors available by theme 
 design.addEventListener("change", e => {
     color.disabled = false;
     for (let i = 0; i < colorOptions.length; i++) {
         const currentOption = colorOptions[i];
         const dataTheme = currentOption.getAttribute("data-theme");
-        if (e.target.value == dataTheme) {
-            currentOption.disabled = false;
+        if (dataTheme == design.value) {
+            currentOption.hidden = false;
+            currentOption.selected = true;
         } else {
-            currentOption.disabled = true;
+            currentOption.hidden = true;
+            currentOption.selected = false;
         }
     }
 });
@@ -64,7 +66,7 @@ const creditCard = document.getElementById("credit-card");
 const paypal = document.getElementById("paypal");
 const bitcoin = document.getElementById("bitcoin");
 
-//hide/display selected payment methods
+//hide or display selected payment methods
 paypal.style.display = 'none';
 bitcoin.style.display = 'none';
 
@@ -92,152 +94,86 @@ const zipCode = document.getElementById("zip");
 const cvv = document.getElementById("cvv");
 let form = document.querySelector("form");
 const activitiesBox = document.getElementById("activities-box");
-
+let activitiesCheckBoxes = registerActivties.querySelectorAll('[type="checkbox"]');
 let formValid = true;
 
 //form validation section 
-form.addEventListener("submit", e => {
-    nameValidation();
-    emailValidation();
-    registerValidation();
 
-    if(payWith.value == "credit-card") {
-    cardNumValidation();
-    zipValidation();
-    cvvValidation();
+form.addEventListener( "submit", e => {
+    if (isNameValid() && isEmailValid() && isRegisterValid() && isPaymentValid()) {
+        return true;
+    } else {
+        e.preventDefault();
+        errorMessage(isNameValid(), nameInput.parentElement);
+        errorMessage(isEmailValid(), emailInput.parentElement);
+        errorMessage(isRegisterValid(), registerActivties);
     }
+    if (payWith.value = 'credit-card') {
+        errorMessage(true, payWith.parentElement);
+        errorMessage(isCardNumValid(), cardNumber.parentElement);
+        errorMessage(isZipValid(), zipCode.parentElement);
+        errorMessage(isCvvValid(), cvv.parentElement);
+        }
 
-    if (!formValid) {
-    e.preventDefault();  
-    }
 });
 
-function nameValidation() {
-    const nameValue = nameInput.value;
-    if (isNameValid(nameValue)) {
-        nameInput.parentElement.className += "valid";
-        nameInput.classList.remove("not-valid");
-        nameInput.parentElement.lastElementChild.display = "none";
+//Error notification function - part of the accesssibility section 
+function errorMessage (validationFunction, element) {
+    if (!validationFunction) {
+        element.classList.add("not-valid");
+        element.classList.remove("valid")
+        element.lastElementChild.style.display = "inherit";
     } else {
-        nameInput.parentElement.className += "not-valid";
-        nameInput.classList.remove("valid");
-        nameInput.parentElement.lastElementChild.display = "inherit";
-        console.log('test');
-        formValid = false;
+        element.classList.remove("not-valid");
+        element.classList.add("valid");
+        element.lastElementChild.style.display = "none";
     }
+
 }
 
 function isNameValid(name) {
     return /^[A-Za-z]+$/.test(name);
 }
 
-function emailValidation() {
-    const emailValue = emailInput.value;
-    if (isEmailValid(emailValue)) {
-        emailInput.parentElement.className += "valid";
-        emailInput.classList.remove("not-valid");
-        emailInput.parentElement.lastElementChild.display = "none";
-    } else {
-        emailInput.parentElement.className += "not-valid";
-        emailInput.classList.remove("valid");
-        emailInput.parentElement.lastElementChild.display = "inherit";
-        formValid = false;
-    }
-}
-
 function isEmailValid(email) {
     return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
-}
-
-function cardNumValidation() {
-    const cardValue = cardNumber.value;
-    if (isCardNumValid(cardValue)) {
-        cardNumber.parentElement.className += "valid";
-        cardNumber.classList.remove("not-valid");
-        cardNumber.parentElement.lastElementChild.display = "none";
-    } else {
-        cardNumber.parentElement.className += "not-valid";
-        cardNumber.classList.remove("valid");
-        cardNumber.parentElement.lastElementChild.display = "inherit";
-        formValid = false;
-    }
 }
 
 function isCardNumValid(cardnumber) {
     return /^\d{13,16}$/.test(cardnumber);
 }
 
-function zipValidation() {
-    const zipValue = zipCode.value;
-    if (isZipValid(zipValue)) {
-        zipCode.parentElement.className += "valid";
-        zipCode.classList.remove("not-valid");
-        zipCode.parentElement.lastElementChild.display = "none";
-    } else {
-        zipCode.parentElement.className += "not-valid";
-        zipCode.classList.remove("valid");
-        zipCode.parentElement.lastElementChild.display = "inherit";
-        formValid = false;
-    }
-}
-
 function isZipValid(zipcode) {
     return /^\d{5}$/.test(zipcode);
-}
-
-function cvvValidation() {
-    const cvvValue = cvv.value;
-    if (isCvvValid(cvvValue)) {
-        cvv.parentElement.className += "valid";
-        cvv.classList.remove("not-valid");
-        cvv.parentElement.lastElementChild.display = "none";
-    } else {
-        cvv.parentElement.className += "not-valid";
-        cvv.classList.remove("valid");
-        cvv.parentElement.lastElementChild.display = "inherit";
-        formValid = false;
-    }
 }
 
 function isCvvValid(cvv) {
     return /^\d{3}$/.test(cvv);
 }
 
-function registerValidation() {
-    if (isRegisterValid()) {
-        activitiesBox.className += "valid";
-        activitiesBox.lastElementChild.display = "none";
-    } else {
-        activitiesBox.className += "not-valid";
-        activitiesBox.lastElementChild.display = "inherit";
-        formValid = false;
-    }
-}
-
 function isRegisterValid() {
-    for (let i = 0; i < activitiesBox.children.length; i++) {
-        if (activitiesBox.children[i].children[0].checked) {
-            activitiesBox.children[i].classList.remove("not-valid");
-            return true;
-        } else {
-            activitiesBox.children[i].classList.remove("valid");
+    let registerSelect = false;
+    for (let i = 0; i < activitiesCheckBoxes.length; i++) {
+        if (activitiesCheckBoxes[i].checked) {
+            registerSelect = true;
         }
     }
-    return false;
+    return registerSelect;
+}
+
+function isPaymentValid() {
+    if (payWith.value == 'credit-card')
+    isCardNumValid();
+    isZipValid();
+    isCvvValid();
 }
 
 //Accessibility section 
-let activitiesCheckBoxes = activitiesBox.querySelectorAll('[type="checkbox"]');
-
 for (let i = 0; i < activitiesCheckBoxes.length; i++) {
         activitiesCheckBoxes[i].addEventListener("focus", e =>  {
-        activitiesCheckBoxes[i].className += "focus";
+        activitiesCheckBoxes[i].parentElement.className += "focus";
     });
         activitiesCheckBoxes[i].addEventListener("blur", e =>  {
-        activitiesCheckBoxes[i].classList.remove("focus");
+        activitiesCheckBoxes[i].parentElement.removeAttribute("class", "focus");
     });
 }
-
-
-
-
