@@ -117,38 +117,24 @@ form.addEventListener( "submit", e => {
 
 });
 
-//Error notification function - part of the accesssibility section 
-function errorMessage (validationFunction, element) {
-    if (!validationFunction) {
-        element.classList.add("not-valid");
-        element.classList.remove("valid")
-        element.lastElementChild.style.display = "inherit";
-    } else {
-        element.classList.remove("not-valid");
-        element.classList.add("valid");
-        element.lastElementChild.style.display = "none";
-    }
-
+function isNameValid() {
+    return /^[A-Za-z]+$/.test(nameInput.value);
 }
 
-function isNameValid(name) {
-    return /^[A-Za-z]+$/.test(name);
+function isEmailValid() {
+    return /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailInput.value);
 }
 
-function isEmailValid(email) {
-    return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
+function isCardNumValid() {
+    return /^\d{13,16}$/.test(cardNumber.value);
 }
 
-function isCardNumValid(cardnumber) {
-    return /^\d{13,16}$/.test(cardnumber);
+function isZipValid() {
+    return /^\d{5}$/.test(zipCode.value);
 }
 
-function isZipValid(zipcode) {
-    return /^\d{5}$/.test(zipcode);
-}
-
-function isCvvValid(cvv) {
-    return /^\d{3}$/.test(cvv);
+function isCvvValid() {
+    return /^\d{3}$/.test(cvv.value);
 }
 
 function isRegisterValid() {
@@ -176,4 +162,17 @@ for (let i = 0; i < activitiesCheckBoxes.length; i++) {
         activitiesCheckBoxes[i].addEventListener("blur", e =>  {
         activitiesCheckBoxes[i].parentElement.removeAttribute("class", "focus");
     });
+}
+
+function errorMessage (validationFunction, element) {
+    if (!validationFunction) {
+        element.classList.add("not-valid");
+        element.classList.remove("valid")
+        element.lastElementChild.style.display = "inherit";
+    } else {
+        element.classList.remove("not-valid");
+        element.classList.add("valid");
+        element.lastElementChild.style.display = "none";
+    }
+
 }
