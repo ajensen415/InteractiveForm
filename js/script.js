@@ -109,13 +109,14 @@ form.addEventListener( "submit", e => {
         errorMessage(isRegisterValid(), registerActivties);
     }
     if (payWith.value = 'credit-card') {
-        errorMessage(true, payWith.parentElement);
         errorMessage(isCardNumValid(), cardNumber.parentElement);
         errorMessage(isZipValid(), zipCode.parentElement);
         errorMessage(isCvvValid(), cvv.parentElement);
         }
 
 });
+
+//required fields validation functions
 
 function isNameValid() {
     return /^[A-Za-z]+$/.test(nameInput.value);
@@ -154,7 +155,7 @@ function isPaymentValid() {
     isCvvValid();
 }
 
-//Accessibility section 
+//Accessibility section - focus on checkboxes & error messaging function. 
 for (let i = 0; i < activitiesCheckBoxes.length; i++) {
         activitiesCheckBoxes[i].addEventListener("focus", e =>  {
         activitiesCheckBoxes[i].parentElement.className += "focus";
