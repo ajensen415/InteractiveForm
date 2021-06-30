@@ -149,10 +149,15 @@ function isRegisterValid() {
 }
 
 function isPaymentValid() {
-    if (payWith.value == 'credit-card')
-    isCardNumValid();
-    isZipValid();
-    isCvvValid();
+    if (payWith.value == 'credit-card'){
+        if (isCardNumValid() && isZipValid() && isCvvValid()) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return true;
+    }
 }
 
 //Accessibility section - focus on checkboxes & error messaging function. 
